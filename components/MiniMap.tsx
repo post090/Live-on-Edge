@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { LOCATIONS, DAYS_OF_WEEK, AREA_LABELS } from '../constants';
 import { LocationInfo } from '../types';
@@ -28,7 +27,7 @@ const MiniMap: React.FC<Props> = ({ currentLocation, onSelect, isTrapped, day, c
         <div className="flex flex-col">
           <h3 className="text-[12px] font-black text-black italic tracking-tighter uppercase leading-none">{AREA_LABELS[currentArea]}</h3>
           <span className="text-[7px] font-black text-slate-400 mt-0.5 uppercase tracking-widest leading-none">
-            Status: {isTrapped ? 'LOCKED' : 'ACTIVE'}
+            当前状态: {isTrapped ? '限制移动' : '自由探索'}
           </span>
         </div>
         <div className={`w-2 h-2 rounded-full ${isTrapped ? 'bg-red-600 animate-ping' : 'bg-emerald-500 animate-pulse'}`}></div>

@@ -35,9 +35,9 @@ const GameMenu: React.FC<Props> = ({ isOpen, onClose, gameState, onLoad, onResta
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity" onClick={onClose}></div>
       <div className="relative w-full max-w-sm bg-white border-r-[10px] border-black flex flex-col p-10 animate-up">
         <header className="mb-16 border-b-[6px] border-black pb-5">
-           <div className="bg-red-600 text-white inline-block px-2 py-0.5 text-[10px] font-black uppercase mb-3">系统管理 // 管理员</div>
+           <div className="bg-red-600 text-white inline-block px-2 py-0.5 text-[10px] font-black uppercase mb-3">系统设置 // 管理员</div>
            <h2 className="text-5xl font-black text-black italic tracking-tighter">控制台</h2>
-           <span className="text-[10px] text-slate-300 font-black tracking-widest mt-3 block uppercase">System Control Interface</span>
+           <span className="text-[10px] text-slate-300 font-black tracking-widest mt-3 block uppercase">人生进程管理界面</span>
         </header>
         
         <div className="flex-1 space-y-6">
@@ -50,7 +50,7 @@ const GameMenu: React.FC<Props> = ({ isOpen, onClose, gameState, onLoad, onResta
               <div className="w-1.5 h-6 bg-blue-600"></div>
               <span>保存进度</span>
             </div>
-            <span className="text-[10px] font-mono opacity-20">存档一</span>
+            <span className="text-[10px] font-mono opacity-20">本地存储</span>
           </button>
           
           <button 
@@ -61,7 +61,7 @@ const GameMenu: React.FC<Props> = ({ isOpen, onClose, gameState, onLoad, onResta
               <div className="w-1.5 h-6 bg-emerald-600"></div>
               <span>载入进度</span>
             </div>
-            <span className="text-[10px] font-mono opacity-20">读取中</span>
+            <span className="text-[10px] font-mono opacity-20">档案库</span>
           </button>
 
           <button 

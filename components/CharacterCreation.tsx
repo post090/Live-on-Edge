@@ -57,7 +57,7 @@ const CharacterCreation: React.FC<Props> = ({ onComplete, onBack }) => {
           <h1 className="text-2xl sm:text-3xl font-black italic tracking-tighter">
             {step === 'ATTR' ? '分配天命' : '刻画身份'}
           </h1>
-          <span className="text-[9px] sm:text-[10px] font-mono text-slate-400 uppercase tracking-widest">Calibration // 2004</span>
+          <span className="text-[9px] sm:text-[10px] font-mono text-slate-400 uppercase tracking-widest">档案校准 // 2014</span>
         </div>
         <button onClick={onBack} className="text-[10px] sm:text-xs font-black border-2 border-black px-3 py-1 active:bg-black active:text-white transition-all">
           返回
@@ -68,7 +68,7 @@ const CharacterCreation: React.FC<Props> = ({ onComplete, onBack }) => {
         {step === 'ATTR' ? (
           <div className="max-w-md mx-auto space-y-1">
             <div className="bg-black text-white p-4 sm:p-5 border-[4px] border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,0.1)] mb-6">
-              <span className="text-[9px] font-black opacity-50 block uppercase mb-1">Available Points</span>
+              <span className="text-[9px] font-black opacity-50 block uppercase mb-1">可用点数</span>
               <div className="flex items-baseline gap-2 leading-none">
                 <span className={`text-5xl sm:text-6xl font-mono font-black ${remaining > 0 ? 'text-white' : 'text-red-500'}`}>
                   {remaining.toString().padStart(2, '0')}
@@ -107,12 +107,11 @@ const CharacterCreation: React.FC<Props> = ({ onComplete, onBack }) => {
           <div className="h-full flex flex-col gap-4 max-w-lg mx-auto">
             <div className="shrink-0 flex flex-col items-center justify-center py-6 sm:py-8 bg-slate-900 border-4 border-black relative overflow-hidden shadow-inner grain-overlay">
               <div className="relative z-10 flex flex-col items-center">
-                {/* 女主头像固定 w-32 (128px) */}
                 <div className="relative p-1 bg-white border-2 border-black shadow-2xl">
                   <ArtisticAvatar className="w-28 h-28 sm:w-32 sm:h-32 grayscale" />
                   <div className="absolute -top-1 -left-1 w-4 h-4 bg-red-600/20"></div>
                 </div>
-                <div className="mt-4 bg-white text-black text-[8px] font-black px-3 py-1 border-2 border-black tracking-widest uppercase">Target // {avatar.hair}</div>
+                <div className="mt-4 bg-white text-black text-[8px] font-black px-3 py-1 border-2 border-black tracking-widest uppercase">目标对象 // {avatar.hair}</div>
               </div>
               <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle,transparent_20%,rgba(0,0,0,0.8)_100%)] pointer-events-none opacity-50"></div>
             </div>
