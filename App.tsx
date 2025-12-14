@@ -1,12 +1,12 @@
 
 import React, { useState, useEffect, useRef } from 'react';
-import { GameState, Attributes, AIRootResponse, Stats, AvatarConfig, LocationInfo } from './types.ts';
-import { INITIAL_GAME_STATE, TIME_ORDER, LOCATIONS, TIME_LABELS } from './constants.ts';
-import CharacterCreation from './components/CharacterCreation.tsx';
-import StatusBar from './components/StatusBar.tsx';
-import GameMenu from './components/GameMenu.tsx';
-import MiniMap from './components/MiniMap.tsx';
-import { generateNarrativeEvent, generateMapSummary } from './services/geminiService.ts';
+import { GameState, Attributes, AIRootResponse, Stats, AvatarConfig, LocationInfo } from './types';
+import { INITIAL_GAME_STATE, TIME_ORDER, LOCATIONS, TIME_LABELS } from './constants';
+import CharacterCreation from './components/CharacterCreation';
+import StatusBar from './components/StatusBar';
+import GameMenu from './components/GameMenu';
+import MiniMap from './components/MiniMap';
+import { generateNarrativeEvent, generateMapSummary } from './services/geminiService';
 
 type Screen = 'TITLE' | 'CREATION' | 'EXPLORE' | 'SUMMARY';
 
@@ -223,7 +223,8 @@ const App: React.FC = () => {
       <StatusBar gameState={gameState!} onMenuOpen={() => setIsMenuOpen(true)} />
       <GameMenu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} gameState={gameState} onLoad={handleLoad} onRestart={() => window.location.reload()} />
       
-      <main className="flex-1 mt-40 overflow-hidden flex flex-col">
+      {/* mt-36 改为适配更窄状态栏的高度 */}
+      <main className="flex-1 mt-36 overflow-hidden flex flex-col">
         {screen === 'EXPLORE' && !currentEvent && !loading && (
           <div className="animate-up h-full flex flex-col">
             <MiniMap 
@@ -260,7 +261,6 @@ const App: React.FC = () => {
                      <p className="col-span-2 text-center text-slate-400 font-black italic">—— 此时段无显著变化 ——</p>
                   ) : Object.entries(accumulatedChanges).map(([key, value]) => {
                     const labelMap: any = { satiety: '饱腹', hygiene: '清洁', mood: '精神', money: '现金', academic: '学业', corruption: '社会化' };
-                    // Added type assertion to fix operator '>' cannot be applied to types 'unknown' and 'number'
                     const val = value as number;
                     if (val === 0) return null;
                     return (

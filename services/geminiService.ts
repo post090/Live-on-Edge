@@ -1,7 +1,7 @@
 
 import { GoogleGenAI, Type } from "@google/genai";
-import { GameState, AIRootResponse } from "../types.ts";
-import { DAYS_OF_WEEK } from "../constants.ts";
+import { GameState, AIRootResponse } from "../types";
+import { DAYS_OF_WEEK } from "../constants";
 
 const getNarrativeContext = (state: GameState) => {
   const recentHistory = state.history.slice(-12).join('\n');
@@ -10,7 +10,6 @@ const getNarrativeContext = (state: GameState) => {
 };
 
 export async function generateNarrativeEvent(state: GameState, currentEventChoices: string[] = []): Promise<AIRootResponse> {
-  // Always use a direct reference to process.env.API_KEY for initialization as per guidelines.
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   const { recentHistory, dayOfWeek } = getNarrativeContext(state);
   
@@ -91,7 +90,6 @@ export async function generateNarrativeEvent(state: GameState, currentEventChoic
 }
 
 export async function generateMapSummary(state: GameState): Promise<string> {
-  // Always use a direct reference to process.env.API_KEY for initialization as per guidelines.
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   const { recentHistory } = getNarrativeContext(state);
   const prompt = `
