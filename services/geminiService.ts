@@ -1,18 +1,19 @@
-
+// Fix: Removed reference to non-existent PLOT_TIMELINE from constants.ts
 import { GoogleGenAI } from "@google/genai";
 import { GameState } from "../types";
-import { DAYS_OF_WEEK, PLOT_TIMELINE } from "../constants";
+import { DAYS_OF_WEEK } from "../constants";
 
+// Fix: Cleaned up unused plot variable from narrative context
 const getNarrativeContext = (state: GameState) => {
   const recentHistory = state.history.slice(-12).join('\n');
   const dayOfWeek = DAYS_OF_WEEK[(state.day - 1) % 7];
-  const plot = PLOT_TIMELINE[state.day] || { title: "平凡的一天", hook: "时间继续流逝。", npc: "路人" };
-  return { recentHistory, dayOfWeek, plot };
+  return { recentHistory, dayOfWeek };
 };
 
 export async function generateMapSummary(state: GameState): Promise<string> {
+  // Fix: Ensure GoogleGenAI is initialized correctly with a named parameter
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-  const { recentHistory, plot } = getNarrativeContext(state);
+  const { recentHistory } = getNarrativeContext(state);
   
   const prompt = `
     你现在是一个极其冷峻、写实的叙事者。
@@ -37,8 +38,10 @@ export async function generateMapSummary(state: GameState): Promise<string> {
         temperature: 0.8
       }
     });
+    // Fix: Access response content using the .text property as per @google/genai guidelines
     return response.text?.trim() || "你站在寒风里。冷雪灌进脖子，手脚早已麻木。你感觉到命运正在一点点收紧。";
   } catch (e) {
+    console.error("Gemini API Error:", e);
     return "你站在风雪中。世界是一片灰白的死寂。你感觉到自己像是一块快要燃尽的煤渣。";
   }
 }

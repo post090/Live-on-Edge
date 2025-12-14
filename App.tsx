@@ -57,7 +57,7 @@ const App: React.FC = () => {
   }, [gameState]);
 
   const handleStartGame = (attr: Attributes, avatar: AvatarConfig) => {
-    const newState = { 
+    const newState: GameState = { 
       ...INITIAL_GAME_STATE, 
       attributes: attr, 
       avatar: avatar,
@@ -105,10 +105,20 @@ const App: React.FC = () => {
     if (!finalEvent) {
       finalEvent = FAINT_EVENTS['DEFAULT'];
     }
-    
+
+    const isFirstVisit = !gameState.visitedLocations.includes(loc.id);
+    const eventToDisplay = { ...finalEvent };
+    if (isFirstVisit && finalEvent.first_visit_text) {
+      eventToDisplay.description = finalEvent.first_visit_text + "\n\n" + finalEvent.description;
+    }
+
     setTimeout(() => {
-      setGameState(prev => prev ? { ...prev, location: loc.name } : null);
-      setCurrentEvent(finalEvent);
+      setGameState(prev => {
+        if (!prev) return null;
+        const newVisited = isFirstVisit ? [...prev.visitedLocations, loc.id] : prev.visitedLocations;
+        return { ...prev, location: loc.name, visitedLocations: newVisited };
+      });
+      setCurrentEvent(eventToDisplay);
       setLoading(false);
     }, 600);
   };
@@ -117,6 +127,13 @@ const App: React.FC = () => {
     if (!gameState || !currentEvent || loading) return;
     const choice = currentEvent.choices[choiceIndex];
     if (!choice) return;
+
+    if (currentEvent.title === "铁轨的震动" && choice.text.includes("购买前往省城的票")) {
+      if (gameState.stats.money < 200) {
+        alert("你翻遍了所有的口袋，只有一堆皱巴巴的毛票。离 200 块的车票钱还差得远。在这个小镇，连‘离开’也是有门槛的。");
+        return;
+      }
+    }
 
     const newChanges = { ...accumulatedChanges };
     Object.entries(choice.stat_changes).forEach(([k, v]) => {
@@ -159,14 +176,14 @@ const App: React.FC = () => {
     if (!gameState) return;
     
     const newStats: Stats = { ...gameState.stats };
-    // 基础自然损耗
-    newStats.satiety = Math.max(0, newStats.satiety - 6); 
-    newStats.hygiene = Math.max(0, newStats.hygiene - 8); 
-    newStats.mood = Math.max(0, newStats.mood - 3);
+    // 一天6次行动，损耗需要更精细，否则玩家太容易饿死或崩溃
+    newStats.satiety = Math.max(0, newStats.satiety - 4); 
+    newStats.hygiene = Math.max(0, newStats.hygiene - 5); 
+    newStats.mood = Math.max(0, newStats.mood - 2);
     
     Object.entries(changes).forEach(([key, val]) => {
       const k = key as keyof Stats;
-      let changeVal = val || 0;
+      let changeVal = (val as number) || 0;
       newStats[k] = Math.max(0, (newStats[k] || 0) + changeVal);
     });
 
@@ -182,8 +199,8 @@ const App: React.FC = () => {
     if (nextTimeIdx === 0) {
       nextDay = Math.min(30, gameState.day + 1);
       if (newStats.debt > 0) {
-        newStats.debt = Math.floor(newStats.debt * 1.2);
-        newStats.mood = Math.max(0, newStats.mood - 10);
+        newStats.debt = Math.floor(newStats.debt * 1.15); // 调整利息倍率
+        newStats.mood = Math.max(0, newStats.mood - 8);
       }
     }
 
@@ -224,7 +241,7 @@ const App: React.FC = () => {
       timeOfDay: 'MORNING',
       day: Math.min(30, gameState.day + 1),
       stats: rescuedStats,
-      history: [...gameState.history, `[第 ${gameState.day} 天] 力竭昏迷。`],
+      history: [...gameState.history, `[第 ${gameState.day} 天] 绝望透顶，力竭昏迷。`],
     });
     setAccumulatedChanges({});
     setCurrentEvent(faintEvent);
@@ -237,7 +254,7 @@ const App: React.FC = () => {
     const newStats: Stats = { ...gameState.stats };
     Object.entries(changes).forEach(([key, val]) => {
       const k = key as keyof Stats;
-      newStats[k] = Math.max(0, (gameState.stats[k] || 0) + (val || 0));
+      newStats[k] = Math.max(0, (gameState.stats[k] || 0) + ((val as number) || 0));
     });
     setGameState({ ...gameState, stats: newStats });
   };
@@ -270,7 +287,7 @@ const App: React.FC = () => {
       <div className="flex flex-col items-center justify-center min-h-screen p-6 text-center bg-white relative overflow-hidden grain-overlay">
         <div className="mb-12 animate-up z-20">
           <div className="inline-block bg-red-700 text-white px-3 py-1 text-[9px] font-black mb-6 uppercase tracking-[0.2em]">2014 // 矿镇伤痕</div>
-          <h1 className="text-6xl sm:text-8xl font-black text-black tracking-tighter mb-4 border-b-[10px] border-black inline-block px-4 py-2 italic leading-none">边缘生活</h1>
+          <h1 className="text-6xl sm:text-8xl font-black text-black tracking-tighter mb-4 border-b-[10px] border-black inline-block px-4 py-2 italic leading-none text-center">边缘生活</h1>
           <p className="text-[11px] text-slate-400 font-black tracking-[0.5em] mt-6 italic uppercase text-center max-w-xs">不读书，就得下井。逃离，或被吞噬。</p>
         </div>
         <div className="w-full max-w-xs space-y-4 z-20">
@@ -287,7 +304,7 @@ const App: React.FC = () => {
       <StatusBar gameState={gameState!} onMenuOpen={() => setIsMenuOpen(true)} onPhoneOpen={() => setIsPhoneOpen(true)} />
       <GameMenu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} gameState={gameState} onLoad={handleLoad} onRestart={() => window.location.reload()} />
       {isPhoneOpen && <PhoneSystem gameState={gameState!} onClose={() => setIsPhoneOpen(false)} onUpdateStats={updateStatsDirectly} onMarkMessageRead={markMessageRead} />}
-      <main className="flex-1 mt-[136px] overflow-hidden flex flex-col h-full">
+      <main className="flex-1 mt-[142px] overflow-hidden flex flex-col h-full">
         {screen === 'EXPLORE' && !currentEvent && !loading && (
           <div className="animate-up h-full flex flex-col overflow-y-auto no-scrollbar">
             <MiniMap currentLocation={gameState!.location} onSelect={handleExplore} isTrapped={gameState!.isTrapped} day={gameState!.day} currentArea={gameState!.currentArea} />
@@ -306,8 +323,6 @@ const App: React.FC = () => {
                <div className="mb-6 p-6 bg-white border-2 border-black shadow-sm relative overflow-hidden">
                   <p className="text-lg font-serif font-black italic text-slate-800 relative z-10">“{resultData.impact}”</p>
                </div>
-
-               {/* 属性变动显示区域 */}
                <div className="mb-10 space-y-2">
                  <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-2">
                    <div className="h-[1px] flex-1 bg-slate-200"></div>
@@ -317,7 +332,6 @@ const App: React.FC = () => {
                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                     {Object.entries(resultData.changes).map(([stat, val]) => {
                       if (val === 0) return null;
-                      // Fix: Explicitly cast 'val' as a number to resolve 'unknown' comparison error.
                       const isPositive = (val as number) > 0;
                       return (
                         <div key={stat} className="flex items-center justify-between p-3 border-2 border-black bg-white animate-up shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
@@ -328,14 +342,12 @@ const App: React.FC = () => {
                         </div>
                       );
                     })}
-                    {/* 自然损耗提示 */}
                     <div className="flex items-center justify-between p-3 border-2 border-dashed border-slate-300 bg-slate-50 opacity-60">
                       <span className="text-[10px] font-black text-slate-400">时间流逝</span>
                       <span className="text-xs font-mono font-black text-slate-400">- 损耗</span>
                     </div>
                  </div>
                </div>
-
                <div className="pb-24">
                  <button onClick={handleAcceptConsequences} className="btn-flat-filled w-full py-5 text-xl tracking-[0.8em] shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] transition-all active:translate-y-1 active:shadow-none">继续呼吸</button>
                </div>

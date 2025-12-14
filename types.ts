@@ -20,7 +20,7 @@ export interface Stats {
   hygiene: number;
   mood: number;
   money: number;
-  debt: number; // 新增债务字段
+  debt: number;
   academic: number;
   corruption: number;
   stamina: number;
@@ -81,7 +81,7 @@ export interface PhoneState {
   messages: Message[];
   videos: ShortVideo[];
   products: Product[];
-  activeApp: 'HOME' | 'SOCIAL' | 'VIDEO' | 'SHOP' | 'YUEYUE' | 'TG' | 'LOAN'; // 新增三个APP
+  activeApp: 'HOME' | 'SOCIAL' | 'VIDEO' | 'SHOP' | 'YUEYUE' | 'TG' | 'LOAN';
 }
 
 export interface LocationInfo {
@@ -116,11 +116,12 @@ export interface AIRootResponse {
   is_final: boolean;
   choices: Choice[];
   speakerId?: 'PLAYER' | 'TEACHER' | 'MOTHER' | 'THUG' | 'OLD_MINER' | 'BOSS';
+  first_visit_text?: string;
 }
 
 export interface GameState {
   day: number;
-  timeOfDay: 'MORNING' | 'AFTERNOON' | 'EVENING' | 'NIGHT';
+  timeOfDay: 'MORNING' | 'FORENOON' | 'AFTERNOON' | 'DUSK' | 'NIGHT' | 'MIDNIGHT';
   attributes: Attributes;
   avatar: AvatarConfig;
   stats: Stats;
@@ -129,4 +130,5 @@ export interface GameState {
   currentArea: 'MINING_TOWN' | 'PROVINCIAL_CAPITAL' | 'BORDER_TOWN';
   isTrapped: boolean;
   phone: PhoneState;
+  visitedLocations: string[]; 
 }
