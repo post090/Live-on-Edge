@@ -1,8 +1,8 @@
 
 import React, { useState } from 'react';
-import { Attributes, AvatarConfig } from '../types';
-import { INITIAL_POINTS, AVATAR_OPTIONS } from '../constants';
-import ArtisticAvatar from './ArtisticAvatar';
+import { Attributes, AvatarConfig } from '../types.ts';
+import { INITIAL_POINTS, AVATAR_OPTIONS } from '../constants.ts';
+import ArtisticAvatar from './ArtisticAvatar.tsx';
 
 interface Props {
   onComplete: (attr: Attributes, avatar: AvatarConfig) => void;
@@ -29,7 +29,8 @@ const CharacterCreation: React.FC<Props> = ({ onComplete, onBack }) => {
     hair: 'messy', eyes: 'tired', expression: 'neutral', outfit: 'padded', accessory: 'none',
   });
 
-  const usedPoints = Object.values(attr).reduce((a, b) => a + b, 0);
+  // Added type assertion to fix operator '+' cannot be applied to types 'unknown' and 'unknown'
+  const usedPoints = (Object.values(attr) as number[]).reduce((a, b) => a + b, 0);
   const remaining = INITIAL_POINTS - usedPoints;
 
   const handleSliderChange = (key: keyof Attributes, value: number) => {
@@ -105,14 +106,14 @@ const CharacterCreation: React.FC<Props> = ({ onComplete, onBack }) => {
           </div>
         ) : (
           <div className="h-full flex flex-col gap-4">
-            <div className="shrink-0 flex flex-col items-center justify-center py-6 bg-slate-900 border-4 border-black relative overflow-hidden">
-              {/* 缩小头像尺寸并增加边框装饰 */}
+            <div className="shrink-0 flex flex-col items-center justify-center py-4 bg-slate-900 border-4 border-black relative overflow-hidden">
               <div className="relative z-10">
-                <ArtisticAvatar className="w-24 h-24 sm:w-28 sm:h-28 border-4 border-white grayscale shadow-2xl" />
-                <div className="absolute -bottom-2 -right-2 bg-white text-black text-[8px] font-black px-1 border-2 border-black">ID: 04-892</div>
+                {/* 进一步缩小头像至 w-18 */}
+                <ArtisticAvatar className="w-18 h-18 sm:w-22 sm:h-22 border-2 border-white grayscale shadow-xl" />
+                <div className="absolute -bottom-1 -right-1 bg-white text-black text-[7px] font-black px-1 border-2 border-black">ID: 04-892</div>
               </div>
-              <p className="text-[9px] text-white/40 italic text-center px-8 font-bold leading-relaxed mt-4 z-10 max-w-[240px]">
-                “无论外壳如何更替，你的本质已注定。”
+              <p className="text-[8px] text-white/40 italic text-center px-8 font-bold leading-relaxed mt-2 z-10 max-w-[240px]">
+                “外壳只是掩体。”
               </p>
               <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle,transparent_20%,rgba(0,0,0,0.6)_100%)] pointer-events-none"></div>
             </div>

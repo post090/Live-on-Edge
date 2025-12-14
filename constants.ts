@@ -1,5 +1,5 @@
 
-import { GameState, LocationInfo } from './types';
+import { GameState, LocationInfo } from './types.ts';
 
 export const INITIAL_POINTS = 20;
 

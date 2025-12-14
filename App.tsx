@@ -1,13 +1,12 @@
 
-import { useState, useEffect, useRef } from 'react';
-// Move LocationInfo to the correct import source from types.ts
-import { GameState, Attributes, AIRootResponse, Stats, AvatarConfig, LocationInfo } from './types';
-import { INITIAL_GAME_STATE, TIME_ORDER, LOCATIONS, TIME_LABELS } from './constants';
-import CharacterCreation from './components/CharacterCreation';
-import StatusBar from './components/StatusBar';
-import GameMenu from './components/GameMenu';
-import MiniMap from './components/MiniMap';
-import { generateNarrativeEvent, generateMapSummary } from './services/geminiService';
+import React, { useState, useEffect, useRef } from 'react';
+import { GameState, Attributes, AIRootResponse, Stats, AvatarConfig, LocationInfo } from './types.ts';
+import { INITIAL_GAME_STATE, TIME_ORDER, LOCATIONS, TIME_LABELS } from './constants.ts';
+import CharacterCreation from './components/CharacterCreation.tsx';
+import StatusBar from './components/StatusBar.tsx';
+import GameMenu from './components/GameMenu.tsx';
+import MiniMap from './components/MiniMap.tsx';
+import { generateNarrativeEvent, generateMapSummary } from './services/geminiService.ts';
 
 type Screen = 'TITLE' | 'CREATION' | 'EXPLORE' | 'SUMMARY';
 
@@ -53,7 +52,6 @@ const App: React.FC = () => {
     setEventHistory([]);
     setAccumulatedChanges({});
     
-    // 立即更新地点，但不推进时间（探索中消耗时间）
     const stateAtStartOfExplore = { ...gameState, location: loc.name };
     
     try {
@@ -106,7 +104,6 @@ const App: React.FC = () => {
   const finalizeStats = async (changes: Partial<Stats>, history: string[], wasFreed: boolean, targetArea?: any) => {
     if (!gameState) return;
     
-    // 时间推进逻辑：关键修复
     const currentTimeIdx = TIME_ORDER.indexOf(gameState.timeOfDay);
     let nextTimeIdx = (currentTimeIdx + 1) % TIME_ORDER.length;
     let nextDay = gameState.day;
@@ -226,7 +223,7 @@ const App: React.FC = () => {
       <StatusBar gameState={gameState!} onMenuOpen={() => setIsMenuOpen(true)} />
       <GameMenu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} gameState={gameState} onLoad={handleLoad} onRestart={() => window.location.reload()} />
       
-      <main className="flex-1 mt-44 overflow-hidden flex flex-col">
+      <main className="flex-1 mt-40 overflow-hidden flex flex-col">
         {screen === 'EXPLORE' && !currentEvent && !loading && (
           <div className="animate-up h-full flex flex-col">
             <MiniMap 
@@ -261,8 +258,10 @@ const App: React.FC = () => {
                 <div className="grid grid-cols-2 gap-6">
                   {Object.keys(accumulatedChanges).length === 0 ? (
                      <p className="col-span-2 text-center text-slate-400 font-black italic">—— 此时段无显著变化 ——</p>
-                  ) : Object.entries(accumulatedChanges).map(([key, val]) => {
+                  ) : Object.entries(accumulatedChanges).map(([key, value]) => {
                     const labelMap: any = { satiety: '饱腹', hygiene: '清洁', mood: '精神', money: '现金', academic: '学业', corruption: '社会化' };
+                    // Added type assertion to fix operator '>' cannot be applied to types 'unknown' and 'number'
+                    const val = value as number;
                     if (val === 0) return null;
                     return (
                       <div key={key} className="flex justify-between items-center border-b-[2px] border-slate-200 pb-2">

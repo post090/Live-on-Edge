@@ -1,7 +1,7 @@
 
 import { GoogleGenAI, Type } from "@google/genai";
-import { GameState, AIRootResponse } from "../types";
-import { DAYS_OF_WEEK } from "../constants";
+import { GameState, AIRootResponse } from "../types.ts";
+import { DAYS_OF_WEEK } from "../constants.ts";
 
 const getNarrativeContext = (state: GameState) => {
   const recentHistory = state.history.slice(-12).join('\n');
@@ -10,6 +10,7 @@ const getNarrativeContext = (state: GameState) => {
 };
 
 export async function generateNarrativeEvent(state: GameState, currentEventChoices: string[] = []): Promise<AIRootResponse> {
+  // Always use a direct reference to process.env.API_KEY for initialization as per guidelines.
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   const { recentHistory, dayOfWeek } = getNarrativeContext(state);
   
@@ -24,38 +25,28 @@ export async function generateNarrativeEvent(state: GameState, currentEventChoic
     - 绝不能生成与之前行动脱节的随机事件。
     - 必须解析历史记录：${recentHistory}。
     - 如果玩家上一轮选择了“逃票”，这一轮必须生成关于“乘警盘问”或“在车厢夹缝躲藏”的冲突。
-    - 如果玩家刚才在“红太阳厅”闹事，这一轮必须面临“报复”或“逃跑后果”。
     
     【核心维度：外貌与魅力】
     - 主角魅力：${state.attributes.appearance}/10。
     - 当前发型：${state.avatar.hair}，眼神：${state.avatar.eyes}。
-    - NPC 会根据主角的样貌决定是“施舍”、“剥削”、“猥亵”还是“无视”。
-
-    【当前时序背景】
-    - 第 ${state.day} 天，${state.timeOfDay} (${dayOfWeek})。
-    - 环境描写必须符合时段（清晨的寒霜、深夜的工厂轰鸣等）。
     
     【输出要求】
     - 文本风格：东北伤痕文学。
-    - 如果玩家意图离开矿镇，设置 'new_area' 字段。
   `;
 
   const prompt = `
     当前位置：${state.location} (${state.currentArea})
-    属性：智力${state.attributes.intelligence}, 魅力${state.attributes.appearance}, 韧性${state.attributes.resilience}
+    属性：智力${state.attributes.intelligence}, 魅力${state.attributes.appearance}
     
     历史因果：${recentHistory}
     本回合进展：${currentTurnContext}
-    
-    任务：基于以上因果，生成下一步逻辑严密的冲突。如果是对话，请使用具有地方色彩且冰冷的台词。
   `;
 
   const response = await ai.models.generateContent({
-    model: 'gemini-2.5-pro',
+    model: 'gemini-2.5-flash',
     contents: prompt,
     config: {
       systemInstruction,
-      thinkingConfig: { thinkingBudget: 4000 },
       responseMimeType: 'application/json',
       responseSchema: {
         type: Type.OBJECT,
@@ -66,8 +57,8 @@ export async function generateNarrativeEvent(state: GameState, currentEventChoic
           new_area: { type: Type.STRING, enum: ['MINING_TOWN', 'PROVINCIAL_CAPITAL', 'BORDER_TOWN'] },
           choices: {
             type: Type.ARRAY,
-            minItems: 5,
-            maxItems: 5,
+            minItems: 4,
+            maxItems: 4,
             items: {
               type: Type.OBJECT,
               properties: {
@@ -100,6 +91,7 @@ export async function generateNarrativeEvent(state: GameState, currentEventChoic
 }
 
 export async function generateMapSummary(state: GameState): Promise<string> {
+  // Always use a direct reference to process.env.API_KEY for initialization as per guidelines.
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   const { recentHistory } = getNarrativeContext(state);
   const prompt = `
