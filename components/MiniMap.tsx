@@ -52,4 +52,20 @@ const MiniMap: React.FC<Props> = ({ currentLocation, onSelect, isTrapped, day, c
                   ? 'bg-black text-white border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,0.1)]' 
                   : isDisabled
                     ? 'bg-slate-200 text-slate-400 border-slate-300 opacity-40 grayscale cursor-not-allowed'
-                    : 'bg-white text-black border-slate-200 hover:border-black active:translate-
+                    : 'bg-white text-black border-slate-200 hover:border-black active:translate-y-1'}
+              `}
+            >
+              <span className="text-3xl mb-1">{loc.icon}</span>
+              <span className="text-[10px] font-black whitespace-nowrap overflow-hidden text-ellipsis w-full text-center">
+                {loc.name}
+              </span>
+              {isCurrent && <div className="absolute -top-1.5 -right-1.5 w-3 h-3 bg-red-600 rotate-45 border-2 border-white"></div>}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+
+export default MiniMap;
