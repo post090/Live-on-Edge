@@ -182,36 +182,38 @@ const App: React.FC = () => {
       const [_, speaker, content] = dialogueMatch;
       const isSelf = speaker.includes('我');
       return (
-        <div key={Math.random()} className="mb-6 animate-up">
-          <div className={`inline-block border-[2px] border-black px-2 py-0.5 text-[11px] font-black mb-2 ${isSelf ? 'bg-blue-800 text-white' : 'bg-slate-900 text-white'}`}>
+        <div key={Math.random()} className="mb-4 sm:mb-6 animate-up px-1">
+          <div className={`inline-block border-[2px] border-black px-1.5 py-0.5 text-[9px] sm:text-[11px] font-black mb-1.5 ${isSelf ? 'bg-blue-800 text-white' : 'bg-slate-900 text-white'}`}>
             {speaker}
           </div>
-          <p className="text-black font-serif text-[18px] leading-relaxed font-black pl-3 border-l-[6px] border-slate-100">
+          <p className="text-black font-serif text-[16px] sm:text-[18px] leading-snug sm:leading-relaxed font-black pl-3 border-l-[4px] sm:border-l-[6px] border-slate-100">
             {content.trim()}
           </p>
         </div>
       );
     }
-    return <p key={Math.random()} className="mb-8 text-slate-700 font-serif text-[17px] leading-relaxed font-medium pl-3 animate-up italic opacity-90">{trimmed}</p>;
+    return <p key={Math.random()} className="mb-6 sm:mb-8 text-slate-700 font-serif text-[15px] sm:text-[17px] leading-relaxed font-medium pl-3 animate-up italic opacity-90">{trimmed}</p>;
   };
 
   if (screen === 'TITLE') {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen p-10 text-center bg-white relative">
-        <div className="mb-24 animate-up">
-          <div className="inline-block bg-red-600 text-white px-4 py-1.5 text-xs font-black mb-8 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] uppercase">2004 // FRONTIER</div>
-          <h1 className="text-8xl font-black text-black tracking-tighter mb-4 border-b-[12px] border-black inline-block px-6 py-3 italic">边缘生活</h1>
-          <p className="text-[12px] text-slate-400 font-black tracking-[0.8em] mt-8 italic uppercase opacity-60">命运之论。永不回头。</p>
+      <div className="flex flex-col items-center justify-center min-h-screen p-6 sm:p-10 text-center bg-white relative overflow-hidden grain-overlay">
+        <div className="mb-16 sm:mb-24 animate-up z-20">
+          <div className="inline-block bg-red-600 text-white px-3 py-1 text-[10px] font-black mb-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] uppercase tracking-widest">2004 // FRONTIER</div>
+          <h1 className="text-6xl sm:text-8xl font-black text-black tracking-tighter mb-4 border-b-[8px] sm:border-b-[12px] border-black inline-block px-4 py-2 italic">边缘生活</h1>
+          <p className="text-[10px] sm:text-[12px] text-slate-400 font-black tracking-[0.5em] sm:tracking-[0.8em] mt-6 italic uppercase opacity-60">命运之论。永不回头。</p>
         </div>
-        <div className="w-full max-w-xs space-y-6">
-          <button onClick={() => setScreen('CREATION')} className="btn-flat-filled w-full py-6 text-2xl tracking-[0.5em] shadow-[8px_8px_0px_0px_rgba(0,0,0,0.1)]">开启记录</button>
+        <div className="w-full max-w-xs space-y-4 sm:space-y-6 z-20">
+          <button onClick={() => setScreen('CREATION')} className="btn-flat-filled w-full py-5 sm:py-6 text-xl sm:text-2xl tracking-[0.5em] shadow-[8px_8px_0px_0px_rgba(0,0,0,0.1)]">开启记录</button>
           {!!localStorage.getItem('edge_of_frost_save') && (
             <button onClick={() => {
               const saved = localStorage.getItem('edge_of_frost_save');
               if (saved) handleLoad(JSON.parse(saved));
-            }} className="btn-flat w-full py-6 text-xl font-black hover:bg-slate-50">载入旧事</button>
+            }} className="btn-flat w-full py-5 sm:py-6 text-lg sm:text-xl font-black hover:bg-slate-50">载入旧事</button>
           )}
         </div>
+        {/* 背景装饰 */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[20vw] font-black opacity-[0.03] select-none pointer-events-none italic italic">东北伤痕</div>
       </div>
     );
   }
@@ -223,8 +225,8 @@ const App: React.FC = () => {
       <StatusBar gameState={gameState!} onMenuOpen={() => setIsMenuOpen(true)} />
       <GameMenu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} gameState={gameState} onLoad={handleLoad} onRestart={() => window.location.reload()} />
       
-      {/* mt-36 改为适配更窄状态栏的高度 */}
-      <main className="flex-1 mt-36 overflow-hidden flex flex-col">
+      {/* 动态适配大头像状态栏高度 mt-36 -> mt-44+ */}
+      <main className="flex-1 mt-36 sm:mt-48 overflow-hidden flex flex-col">
         {screen === 'EXPLORE' && !currentEvent && !loading && (
           <div className="animate-up h-full flex flex-col">
             <MiniMap 
@@ -234,39 +236,39 @@ const App: React.FC = () => {
               day={gameState!.day}
               currentArea={gameState!.currentArea}
             />
-            <div className="flex-1 flex flex-col items-center justify-center px-10 text-center pb-10 overflow-y-auto">
-              <div className="w-10 h-1 bg-black mb-10"></div>
-              <p className="text-slate-500 font-serif italic text-2xl leading-relaxed font-bold max-w-sm">
+            <div className="flex-1 flex flex-col items-center justify-center px-8 sm:px-10 text-center pb-10 overflow-y-auto no-scrollbar">
+              <div className="w-8 sm:w-10 h-1 bg-black mb-8 sm:mb-10"></div>
+              <p className="text-slate-500 font-serif italic text-xl sm:text-2xl leading-relaxed font-bold max-w-sm">
                 “{mapSummary}”
               </p>
             </div>
           </div>
         )}
 
-        <div className="flex-1 overflow-y-auto px-6 pt-4 pb-36" ref={scrollRef}>
+        <div className="flex-1 overflow-y-auto px-4 sm:px-6 pt-4 pb-32 no-scrollbar" ref={scrollRef}>
           {loading ? (
-            <div className="flex flex-col items-center justify-center py-60 animate-pulse">
-              <div className="w-20 h-1.5 bg-black mb-8"></div>
-              <p className="text-[12px] tracking-[0.8em] text-slate-400 font-black uppercase italic">命运重组中...</p>
+            <div className="flex flex-col items-center justify-center py-40 sm:py-60 animate-pulse">
+              <div className="w-16 sm:w-20 h-1.5 bg-black mb-6 sm:mb-8"></div>
+              <p className="text-[10px] sm:text-[12px] tracking-[0.6em] sm:tracking-[0.8em] text-slate-400 font-black uppercase italic text-center">命 运 重 组 中 . . .</p>
             </div>
           ) : screen === 'SUMMARY' ? (
-            <div className="max-w-2xl mx-auto py-12 animate-up">
-              <div className={`border-l-[12px] pl-8 mb-12 ${gameState?.isTrapped ? 'border-red-900' : 'border-black'}`}>
-                <h2 className="text-4xl font-black mb-2 italic tracking-tighter uppercase">存活记录 // 第{gameState?.day}日</h2>
-                <p className="text-slate-400 text-[10px] font-black tracking-[0.5em] uppercase">即将进入：{TIME_LABELS[gameState!.timeOfDay]}</p>
+            <div className="max-w-2xl mx-auto py-8 sm:py-12 animate-up">
+              <div className={`border-l-[8px] sm:border-l-[12px] pl-5 sm:pl-8 mb-8 sm:mb-12 ${gameState?.isTrapped ? 'border-red-900' : 'border-black'}`}>
+                <h2 className="text-3xl sm:text-4xl font-black mb-1 sm:mb-2 italic tracking-tighter uppercase leading-none">存活记录 // 第{gameState?.day}日</h2>
+                <p className="text-slate-400 text-[8px] sm:text-[10px] font-black tracking-[0.4em] uppercase">即将进入：{TIME_LABELS[gameState!.timeOfDay]}</p>
               </div>
-              <div className="bg-slate-50 border-[4px] border-black p-8 mb-12">
-                <div className="grid grid-cols-2 gap-6">
+              <div className="bg-slate-50 border-[3px] sm:border-[4px] border-black p-6 sm:p-8 mb-8 sm:mb-12">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                   {Object.keys(accumulatedChanges).length === 0 ? (
-                     <p className="col-span-2 text-center text-slate-400 font-black italic">—— 此时段无显著变化 ——</p>
+                     <p className="col-span-full text-center text-slate-400 font-black italic text-sm">—— 此时段无显著变化 ——</p>
                   ) : Object.entries(accumulatedChanges).map(([key, value]) => {
                     const labelMap: any = { satiety: '饱腹', hygiene: '清洁', mood: '精神', money: '现金', academic: '学业', corruption: '社会化' };
                     const val = value as number;
                     if (val === 0) return null;
                     return (
                       <div key={key} className="flex justify-between items-center border-b-[2px] border-slate-200 pb-2">
-                        <span className="font-black text-[12px] text-slate-500">{labelMap[key]}</span>
-                        <span className={`font-mono font-black ${val > 0 ? 'text-emerald-600' : 'text-red-600'}`}>
+                        <span className="font-black text-[11px] sm:text-[12px] text-slate-500">{labelMap[key]}</span>
+                        <span className={`font-mono font-black text-sm sm:text-base ${val > 0 ? 'text-emerald-600' : 'text-red-600'}`}>
                           {val > 0 ? `+${val}` : val}
                         </span>
                       </div>
@@ -274,26 +276,26 @@ const App: React.FC = () => {
                   })}
                 </div>
               </div>
-              <button onClick={() => { setScreen('EXPLORE'); setCurrentEvent(null); }} className="btn-flat-filled w-full py-6 text-2xl tracking-[0.5em] shadow-[8px_8px_0px_0px_rgba(0,0,0,0.1)] active:translate-y-1 active:shadow-none transition-all">
+              <button onClick={() => { setScreen('EXPLORE'); setCurrentEvent(null); }} className="btn-flat-filled w-full py-5 sm:py-6 text-xl sm:text-2xl tracking-[0.5em] shadow-[8px_8px_0px_0px_rgba(0,0,0,0.1)] active:translate-y-1 active:shadow-none transition-all">
                 推进生命线
               </button>
             </div>
           ) : currentEvent ? (
             <div className="max-w-2xl mx-auto">
-              <div className="mb-12">
-                <h2 className={`text-4xl font-black mb-8 leading-tight border-l-[15px] pl-5 py-1 italic bg-slate-50 ${gameState?.isTrapped ? 'border-red-950 text-red-950' : 'border-red-600 text-black'}`}>
+              <div className="mb-10 sm:mb-12">
+                <h2 className={`text-2xl sm:text-4xl font-black mb-6 sm:mb-8 leading-tight border-l-[12px] sm:border-l-[15px] pl-4 sm:pl-5 py-1 italic bg-slate-50 ${gameState?.isTrapped ? 'border-red-950 text-red-950' : 'border-red-600 text-black'}`}>
                   {currentEvent.title}
                 </h2>
-                <div className="space-y-4">{currentEvent.description.split('\n').map(line => formatTextLine(line))}</div>
+                <div className="space-y-4 px-1">{currentEvent.description.split('\n').map(line => formatTextLine(line))}</div>
               </div>
-              <div className="space-y-3 pb-32">
+              <div className="space-y-3 pb-24 sm:pb-32">
                 {currentEvent.choices.map((choice, idx) => (
                   <button 
                     key={idx} onClick={() => handleChoice(idx)} 
-                    className={`btn-flat w-full text-left p-5 flex flex-col gap-1 border-[3px] transition-all hover:bg-slate-50 ${choice.escape_attempt ? 'border-red-600 border-dashed' : 'border-black'}`}
+                    className={`btn-flat w-full text-left p-4 sm:p-5 flex flex-col gap-0.5 border-[3px] transition-all hover:bg-slate-50 ${choice.escape_attempt ? 'border-red-600 border-dashed' : 'border-black'}`}
                   >
-                    <span className="text-[9px] font-black uppercase tracking-widest opacity-40">Decision 0{idx + 1}</span>
-                    <span className="text-lg font-black leading-tight">{choice.text}</span>
+                    <span className="text-[8px] font-black uppercase tracking-widest opacity-30">Decision 0{idx + 1}</span>
+                    <span className="text-base sm:text-lg font-black leading-tight">{choice.text}</span>
                   </button>
                 ))}
               </div>
